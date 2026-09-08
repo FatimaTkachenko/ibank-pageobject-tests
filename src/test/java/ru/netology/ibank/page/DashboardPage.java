@@ -3,6 +3,7 @@ package ru.netology.ibank.page;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
+import java.time.Duration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,7 +15,7 @@ public class DashboardPage {
     private ElementsCollection cards = $$("ul.list li");
 
     public DashboardPage() {
-        cards.shouldHave(size(2));
+        cards.shouldHave(size(2), Duration.ofSeconds(10));
     }
 
     public String getCardBalance(String cardNumber) {
