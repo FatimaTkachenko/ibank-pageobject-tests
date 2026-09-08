@@ -25,6 +25,7 @@ jobs:
           for i in {1..30}; do
             if curl -s http://localhost:9999 > /dev/null; then
               echo "App is ready!"
+              sleep 10
               break
             fi
             echo "Still waiting... ($i)"
