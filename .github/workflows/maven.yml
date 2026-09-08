@@ -20,7 +20,7 @@ jobs:
           sudo apt-get install -y google-chrome-stable
       - name: Start app
         run: |
-          java -jar artifacts/app-ibank-build-for-testers.jar &
+          nohup java -jar artifacts/app-ibank-build-for-testers.jar > app.log 2>&1 &
           echo "Waiting for app to start..."
           for i in {1..30}; do
             if curl -s http://localhost:9999 > /dev/null; then
@@ -30,5 +30,12 @@ jobs:
             echo "Still waiting... ($i)"
             sleep 2
           done
+          echo "App log (last 20 lines):"
+          tail -20 app.log
       - name: Run tests
         run: mvn test
+      - name: Print page source on failure
+        if: failure()
+        run: |
+          echo "Printing page source from test reports..."
+          find build/reports/tests -name "*.html" -exec cat {} \;
