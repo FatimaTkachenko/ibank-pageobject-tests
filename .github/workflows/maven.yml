@@ -21,6 +21,14 @@ jobs:
       - name: Start app
         run: |
           java -jar artifacts/app-ibank-build-for-testers.jar &
-          sleep 15
+          echo "Waiting for app to start..."
+          for i in {1..30}; do
+            if curl -s http://localhost:9999 > /dev/null; then
+              echo "App is ready!"
+              break
+            fi
+            echo "Still waiting... ($i)"
+            sleep 2
+          done
       - name: Run tests
         run: mvn test
