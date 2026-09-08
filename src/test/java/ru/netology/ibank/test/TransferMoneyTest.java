@@ -1,0 +1,55 @@
+package ru.netology.ibank.test;
+
+import com.codeborne.selenide.Configuration;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import ru.netology.ibank.page.DashboardPage;
+import ru.netology.ibank.page.LoginPage;
+import ru.netology.ibank.page.TransferPage;
+
+import static com.codeborne.selenide.Selenide.open;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class TransferMoneyTest {
+    private static final String CARD1 = "5559 0000 0000 0001";
+    private static final String CARD2 = "5559 0000 0000 0002";
+    private static final int INITIAL_BALANCE = 10000;
+
+    @BeforeEach
+    public void setUp() {
+        Configuration.headless = true;
+        open("http://localhost:9999");
+        LoginPage loginPage = new LoginPage();
+        loginPage.login("vasya", "qwerty123", "12345");
+    }
+
+    @Test
+    public void shouldTransferMoneyBetweenCards() {
+        DashboardPage dashboardPage = new DashboardPage();
+        // Получаем начальные балансы
+        int balance1Initial = parseBalance(dashboardPage.getCardBalance(CARD1));
+        int balance2Initial = parseBalance(dashboardPage.getCardBalance(CARD2));
+        assertEquals(INITIAL_BALANCE, balance1Initial);
+        assertEquals(INITIAL_BALANCE, balance2Initial);
+
+        // Переводим 5000 с карты 2 на карту 1
+        int transferAmount = 5000;
+        dashboardPage.clickReplenish(CARD1);
+        TransferPage transferPage = new TransferPage();
+        transferPage.transfer(String.valueOf(transferAmount), CARD2);
+
+        // Возвращаемся на DashboardPage (после перевода происходит автоматический переход)
+        dashboardPage = new DashboardPage();
+        int balance1After = parseBalance(dashboardPage.getCardBalance(CARD1));
+        int balance2After = parseBalance(dashboardPage.getCardBalance(CARD2));
+
+        assertEquals(balance1Initial + transferAmount, balance1After);
+        assertEquals(balance2Initial - transferAmount, balance2After);
+    }
+
+    private int parseBalance(String balanceText) {
+        // Убираем все нецифровые символы, например "10 000 руб." -> "10000"
+        String digits = balanceText.replaceAll("[^0-9]", "");
+        return Integer.parseInt(digits);
+    }
+}
