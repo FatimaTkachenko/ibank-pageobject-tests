@@ -2,6 +2,9 @@ package ru.netology.ibank.page;
 
 import com.codeborne.selenide.SelenideElement;
 
+import java.time.Duration;
+
+import static com.codeborne.selenide.Condition.appear;
 import static com.codeborne.selenide.Selenide.$;
 
 public class LoginPage {
@@ -15,7 +18,7 @@ public class LoginPage {
         loginField.setValue(login);
         passwordField.setValue(password);
         loginButton.click();
-        verificationField.setValue(verificationCode);
+        verificationField.should(appear, Duration.ofSeconds(10)).setValue(verificationCode);
         verifyButton.click();
     }
 }
