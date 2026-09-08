@@ -1,10 +1,11 @@
 package ru.netology.ibank.page;
 
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.Selenide;
 
 import java.time.Duration;
 
-import static com.codeborne.selenide.Condition.appear;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 public class LoginPage {
@@ -18,7 +19,9 @@ public class LoginPage {
         loginField.setValue(login);
         passwordField.setValue(password);
         loginButton.click();
-        verificationField.should(appear, Duration.ofSeconds(10)).setValue(verificationCode);
+        // Даём время на загрузку страницы с кодом подтверждения
+        Selenide.sleep(2000);
+        verificationField.should(visible, Duration.ofSeconds(10)).setValue(verificationCode);
         verifyButton.click();
     }
 }

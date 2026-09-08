@@ -19,6 +19,7 @@ public class TransferMoneyTest {
     @BeforeEach
     public void setUp() {
         Configuration.headless = true;
+        Configuration.timeout = 15000;
         Configuration.browserCapabilities = new ChromeOptions()
                 .addArguments("--no-sandbox", "--disable-dev-shm-usage");
         open("http://localhost:9999");
