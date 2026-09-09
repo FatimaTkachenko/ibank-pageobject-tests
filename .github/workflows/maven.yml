@@ -1,4 +1,4 @@
-name: Maven CI
+name: Java CI with Gradle
 
 on:
   push:
@@ -8,12 +8,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
       - name: Install Chrome
         run: |
           sudo apt-get update
@@ -34,7 +36,7 @@ jobs:
           echo "App log (last 20 lines):"
           tail -20 app.log
       - name: Run tests
-        run: mvn test
+        run: gradle test
       - name: Print page source on failure
         if: failure()
         run: |
