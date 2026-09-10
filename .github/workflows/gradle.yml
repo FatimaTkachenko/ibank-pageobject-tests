@@ -46,4 +46,6 @@ jobs:
           tail -20 app.log
 
       - name: Run tests with Gradle
-        run: ./gradlew test
+        run: |
+          chmod +x gradlew
+          ./gradlew test
